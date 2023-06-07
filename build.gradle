@@ -30,3 +30,23 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+tasks.register('extractBootJar', Copy) {
+    dependsOn bootJar
+    def zipFile = file("${buildDir}/libs/${rootProject.name}-${version}.jar")
+    def outputDir = file("${buildDir}/layers")
+
+    from zipTree(zipFile)
+    into outputDir
+}
+
+tasks.register('dockerBuild') {
+    dependsOn tasks.named("extractBootJar")
+    doLast {
+        exec {
+            commandLine "sh", "-c", "(docker rm ${rootProject.name} || true) " +
+                    "&& (docker rmi ${rootProject.name} || true)" +
+                    "&& docker build -t ${rootProject.name} ."
+        }
+    }
+}

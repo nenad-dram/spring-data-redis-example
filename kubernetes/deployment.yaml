@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-data-redis-deploy
+  labels:
+    name: spring-data-redis-deploy
+    app: spring-data-redis-example
+spec:
+  selector:
+    matchLabels:
+      name: spring-data-redis-pod
+      app: spring-data-redis-example
+  replicas: 1
+  template:
+    metadata:
+      name: spring-data-redis-pod
+      labels:
+        name: spring-data-redis-pod
+        app: spring-data-redis-example
+    spec:
+      containers:
+        - name: spring-data-redis-example
+          image: spring-data-redis-example
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deploy
+  labels:
+    name: redis-deploy
+    app: spring-data-redis-example
+spec:
+  selector:
+    matchLabels:
+      name: redis-pod
+      app: spring-data-redis-example
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: redis-pod
+        app: spring-data-redis-example
+    spec:
+      containers:
+        - name: redis
+          image: redis
+          ports:
+            - containerPort: 6379

@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-data-redis-service
+  labels:
+    name: spring-data-redis-service
+    app: spring-data-redis-example
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30080
+  selector:
+    name: spring-data-redis-pod
+    app: spring-data-redis-example
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    name: redis-service
+    app: spring-data-redis-example
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    name: redis-pod
+    app: spring-data-redis-example
